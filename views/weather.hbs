@@ -1,0 +1,118 @@
+<html lang="en">
+
+<head>
+  {{>links}}
+</head>
+
+<body>
+  {{>navbar}}
+  <!-- header Part -->
+  <div class="container">
+    <div class="row">
+      <!-- Left Part -->
+      <div class="col-md-12 cd-12 align-items-center search_part">
+        <div class="search-2"> <i class='bx bxs-map'></i>
+          <input type="text" placeholder="Enter Your City Here" id="state">
+          <button id="mybtn" type="button">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{!-- header part 2 --}}
+  <section>
+    <div class="container h-100">
+
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-md-8 col-lg-6 col-xl-4 ">
+
+          <div class="card" style="color: #c4b2b2; border-radius: 35px;background-color:rgb(8, 8, 8);">
+            <div class="card-body p-4">
+
+              <div class="d-flex">
+                <h4 class="flex-grow-1" id="war">Warsaw</h4>
+                <h4 id="showingDate">15:07</h4>
+              </div>
+
+              <div class="d-flex flex-column text-center mt-5 mb-4">
+                <h6 class="display-4 mb-0 font-weight-bold" id="msg"> ? </h6>
+                <span style="color: #868B94;font-size:150%;" class="hide" id="cname">Stormy</span>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                  <img src="./images/cloud.png" width="100px" class="hide" id="img1">
+                </div>
+                <div>
+                  <img src="./images/cloud.png" width="100px" class="hide" id="img2">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <!-- Footer Part -->
+  {{>footer}}
+
+  <script>
+    const btn = document.getElementById("mybtn");
+    const state = document.getElementById('state');
+    const msg = document.getElementById('msg');//for display
+    const city_name = document.getElementById('cname');
+    const img1 = document.getElementById('img1');
+    const img2 = document.getElementById('img2');
+    const fun = async () => {
+      if (state.value == "") {
+        msg.innerText = "Do Not Be Empty!!";
+      }
+      else {
+        try {
+          let url = `https://api.openweathermap.org/data/2.5/weather?q=${state.value}&units=metric&appid=421e87554fedcafea3cbbec017ac16e6`;
+          let response = await fetch(url);
+          let obj = await response.json();
+          city_name.style.visibility = "visible";
+          city_name.innerText = state.value;
+          msg.innerText = obj.main.temp + ` °C`;
+          img1.style.visibility = "visible";
+          img2.style.visibility = "visible";
+        }
+        catch {
+          msg.innerText = "Invalid Search!!";
+          city_name.style.visibility = "hidden";
+        }
+      }
+    }
+
+    btn.addEventListener("click", fun);//For Click
+    state.addEventListener("keypress", (event) => {
+      if (event.key === "Enter") {
+        fun();
+      }
+    })
+  </script> 
+  <script>
+    let date = new Date();
+    let day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    let war = day[date.getDay()];
+    document.getElementById('war').innerText = war;
+    let min = date.getMinutes();
+    let hour = date.getHours();
+    let perios = "AM";
+    if (hour > 11) {
+      perios = "PM";
+      if (hour > 12) {
+        hour -= 12;
+      }
+      if (min < 10) {
+        min = '0' + min;
+      }
+    }
+    document.getElementById('showingDate').innerText = `${hour}:${min} ${perios}`;
+  </script>
+</body>
+
+</html>
